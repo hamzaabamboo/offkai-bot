@@ -93,6 +93,135 @@ function BrandSign({ compact = false }: { compact?: boolean }) {
   )
 }
 
+// --- Organiser Hub (spec preview) ----------------------------------------
+// UI-only mock of the staff-side "offkai chaos" controls, stamped 準備中
+// (coming soon). No API calls — ships as the bot adds support.
+
+function ComingSoon({ className = '' }: { className?: string }) {
+  return (
+    <span className={`brand-hanko inline-flex items-center justify-center px-1 py-2 text-[11px] tracking-[0.1em] ${className}`} title="Coming soon">
+      準備中
+    </span>
+  )
+}
+
+function MAvatar({ name }: { name: string }) {
+  return (
+    <div className="w-9 h-9 rounded-full border-2 border-[#17120F] bg-[#FFD51B] text-[#17120F] flex items-center justify-center font-black text-sm shrink-0">
+      {name[0].toUpperCase()}
+    </div>
+  )
+}
+
+function MSection({ title, jp, children }: { title: string; jp: string; children: React.ReactNode }) {
+  return (
+    <div className="brand-card relative rounded-2xl p-5">
+      <ComingSoon className="absolute -right-2 -top-3 rotate-6" />
+      <div className="mb-3 flex items-end gap-2">
+        <h3 className="font-display text-base uppercase tracking-tight text-[#17120F] leading-none">{title}</h3>
+        <span className="font-brush text-lg leading-none text-[#8B2D1F]">{jp}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+const ORG_GROUPS = [
+  { lead: 'Fadekyun', size: 2, table: 3 },
+  { lead: 'Sakichan', size: 1, table: 3 },
+  { lead: 'Hoshino', size: 3, table: 5 },
+]
+const ORG_SENT = [
+  { time: '10:32', text: 'Doors open at 12:00 sharp — karaage boat incoming 🍗', pinned: true },
+  { time: '10:40', text: 'Table assignments are up — find your group below 👇', pinned: false },
+]
+
+function OrganiserHub() {
+  return (
+    <div className="space-y-4 pt-2">
+      <div className="flex items-center gap-2">
+        <div className="h-0.5 flex-1 rounded bg-[#17120F]/30" />
+        <span className="brand-banner inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[10px] tracking-[0.2em]">
+          <span className="font-brush text-sm leading-none">準備中</span> Organiser Tools
+        </span>
+        <div className="h-0.5 flex-1 rounded bg-[#17120F]/30" />
+      </div>
+
+      {/* Announce */}
+      <MSection title="Announce" jp="掲示板">
+        <p className="text-xs font-bold text-[#5B3428] mb-3">Post to the attendee board — mirrored to the event&apos;s Discord channel.</p>
+        <div className="rounded-xl border-2 border-[#17120F] bg-white p-3 shadow-[3px_3px_0_rgba(23,18,15,0.2)]">
+          <div className="min-h-[48px] text-sm font-bold text-[#8B2D1F]/55">Write an announcement…</div>
+          <div className="mt-2 flex items-center gap-2 border-t-2 border-dashed border-[#17120F]/30 pt-2">
+            <span className="inline-flex items-center gap-1 rounded-lg border-2 border-[#5865F2] bg-[#5865F2]/10 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-[#404bbf]">Discord</span>
+            <button disabled className="brand-action-alt ml-auto rounded-lg border-2 border-[#17120F] px-3 py-1.5 text-[10px] font-black uppercase tracking-widest opacity-60">Pin</button>
+            <button disabled className="brand-action rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-widest opacity-60">Post</button>
+          </div>
+        </div>
+        <div className="mt-3 space-y-2">
+          {ORG_SENT.map((s, i) => (
+            <div key={i} className="flex items-start gap-2 rounded-xl border-2 border-[#17120F] bg-[#FFF8D8] p-2.5">
+              {s.pinned && <span className="rounded bg-[#E51F1F] px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-white shrink-0">Pinned</span>}
+              <p className="text-xs font-bold text-[#3A2410] leading-snug flex-1">{s.text}</p>
+              <span className="text-[10px] font-bold text-[#8B2D1F]/70 shrink-0">{s.time}</span>
+            </div>
+          ))}
+        </div>
+      </MSection>
+
+      {/* Tables */}
+      <MSection title="Tables" jp="卓割り">
+        <p className="text-xs font-bold text-[#5B3428] mb-3">Assign each group a table, or auto-arrange by party size.</p>
+        <div className="space-y-2">
+          {ORG_GROUPS.map(g => (
+            <div key={g.lead} className="flex items-center gap-3 rounded-xl border-2 border-[#17120F] bg-white p-2.5 shadow-[3px_3px_0_rgba(23,18,15,0.2)]">
+              <MAvatar name={g.lead} />
+              <div className="min-w-0 flex-1">
+                <p className="font-black text-sm text-[#17120F] truncate">{g.lead}&apos;s group</p>
+                <p className="text-[10px] font-bold text-[#8B2D1F]">party of {g.size}</p>
+              </div>
+              <div className="flex items-center gap-1 rounded-lg border-2 border-[#17120F] bg-[#FFD51B] px-2.5 py-1.5">
+                <span className="font-brush text-xs text-[#17120F]">卓</span>
+                <span className="font-display text-base leading-none text-[#17120F]">{g.table}</span>
+                <svg viewBox="0 0 24 24" className="w-3 h-3 text-[#17120F]" fill="none" stroke="currentColor" strokeWidth="3"><path d="m6 9 6 6 6-6" /></svg>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button disabled className="brand-action mt-3 w-full rounded-xl py-2.5 text-[11px] font-black uppercase tracking-widest opacity-60">Auto-arrange tables</button>
+      </MSection>
+
+      {/* Settle Up */}
+      <MSection title="Settle Up" jp="お会計">
+        <p className="text-xs font-bold text-[#5B3428] mb-3">Set how attendees pay you at check-out — stays peer-to-peer.</p>
+        <div className="flex items-center justify-between rounded-xl border-2 border-[#17120F] bg-[#FFF8D8] p-3 mb-3">
+          <div>
+            <p className="font-black text-sm text-[#17120F]">Collect at check-out</p>
+            <p className="text-[10px] font-bold text-[#8B2D1F]">Show the bill when a guest checks out</p>
+          </div>
+          <div className="flex h-7 w-12 items-center rounded-full border-2 border-[#17120F] bg-[#E51F1F] px-0.5 justify-end">
+            <div className="h-5 w-5 rounded-full border-2 border-[#17120F] bg-white" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="rounded-xl border-2 border-[#17120F] bg-white p-2.5 flex items-center gap-2">
+            <span className="inline-flex w-16 justify-center rounded-lg border-2 border-[#17120F] bg-[#9FE870] py-1 text-[10px] font-black text-[#163300]">Wise</span>
+            <span className="text-sm font-bold text-[#8B2D1F]/55 truncate">wise.com/pay/…</span>
+          </div>
+          <div className="rounded-xl border-2 border-[#17120F] bg-white p-2.5 flex items-center gap-2">
+            <span className="inline-flex w-16 justify-center rounded-lg border-2 border-[#17120F] bg-[#FF0033] py-1 text-[10px] font-black text-white">PayPay</span>
+            <span className="text-sm font-bold text-[#8B2D1F]/55 truncate">paypay.me/…</span>
+          </div>
+          <div className="rounded-xl border-2 border-[#17120F] bg-white p-2.5 flex items-center gap-2">
+            <span className="inline-flex w-16 justify-center rounded-lg border-2 border-[#17120F] bg-[#FFF8D8] py-1 text-[10px] font-black text-[#17120F]">¥ / head</span>
+            <span className="text-sm font-bold text-[#8B2D1F]/55">3,200</span>
+          </div>
+        </div>
+      </MSection>
+    </div>
+  )
+}
+
 export default function AdminPage() {
   const [key, setKey] = useState('')
   const [authed, setAuthed] = useState(false)
@@ -605,6 +734,8 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        <OrganiserHub />
       </div>
     </main>
   )
