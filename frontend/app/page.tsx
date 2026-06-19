@@ -387,11 +387,170 @@ function RSVPCard({ data, token }: { data: AttendeeData; token: string }) {
           </div>
         </div>
 
+        <OffkaiHub />
+
         <p className="text-center text-[10px] font-black text-[#8B2D1F] uppercase tracking-widest pt-2">
           This link is personal — please don&apos;t share it.
         </p>
       </div>
     </main>
+  )
+}
+
+// --- Offkai Hub (spec preview) -------------------------------------------
+// UI-only mock of the post-RSVP "offkai chaos" features. Everything here is
+// non-functional and stamped 準備中 (coming soon) until the bot adds support.
+
+function ComingSoon({ className = '' }: { className?: string }) {
+  return (
+    <span className={`brand-hanko inline-flex items-center justify-center px-1 py-2 text-[11px] tracking-[0.1em] ${className}`} title="Coming soon">
+      準備中
+    </span>
+  )
+}
+
+function HubAvatar({ name, tone = 'yellow' }: { name: string; tone?: 'yellow' | 'ink' | 'white' }) {
+  const cls = tone === 'ink' ? 'bg-[#17120F] text-white' : tone === 'white' ? 'bg-white text-[#17120F]' : 'bg-[#FFD51B] text-[#17120F]'
+  return (
+    <div className={`w-9 h-9 rounded-full border-2 border-[#17120F] flex items-center justify-center font-black text-sm shrink-0 shadow-[2px_2px_0_#17120F] ${cls}`}>
+      {name[0].toUpperCase()}
+    </div>
+  )
+}
+
+function HubSection({ title, jp, children }: { title: string; jp: string; children: React.ReactNode }) {
+  return (
+    <div className="brand-card relative rounded-2xl p-5">
+      <ComingSoon className="absolute -right-2 -top-3 rotate-6" />
+      <div className="mb-3 flex items-end gap-2">
+        <h3 className="font-display text-base uppercase tracking-tight text-[#17120F] leading-none">{title}</h3>
+        <span className="font-brush text-lg leading-none text-[#8B2D1F]">{jp}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+const HUB_ANNOUNCEMENTS = [
+  { author: 'Fadekyun', host: true, time: '10:32', text: 'Doors open at 12:00 sharp — karaage boat incoming 🍗' },
+  { author: 'Fadekyun', host: true, time: '10:40', text: 'Table assignments are up — find your group below 👇' },
+]
+const HUB_SUGGESTIONS = ['Sakichan', 'Hoshino', 'Arisa']
+const HUB_TABLES = [1, 2, 3, 4, 5, 6].map(n => ({ n, yours: n === 3 }))
+
+function OffkaiHub() {
+  return (
+    <div className="space-y-4 pt-2">
+      <div className="flex items-center gap-2">
+        <div className="h-0.5 flex-1 rounded bg-[#17120F]/30" />
+        <span className="brand-banner inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[10px] tracking-[0.2em]">
+          <span className="font-brush text-sm leading-none">準備中</span> Offkai Hub
+        </span>
+        <div className="h-0.5 flex-1 rounded bg-[#17120F]/30" />
+      </div>
+
+      {/* Board */}
+      <HubSection title="Board" jp="掲示板">
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-lg border-2 border-[#5865F2] bg-[#5865F2]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#404bbf]">
+          <svg viewBox="0 0 24 18" className="h-3.5 w-4" fill="#5865F2" aria-hidden="true"><path d="M20 1.5A19 19 0 0 0 15.3 0l-.3.5a17 17 0 0 1 4.2 1.3 16 16 0 0 0-13.4 0A17 17 0 0 1 10 .5L9.7 0A19 19 0 0 0 5 1.5C2 6 1.2 10.4 1.5 14.7A19 19 0 0 0 7.3 18l.6-1a12 12 0 0 1-1.8-.9l.4-.3a13 13 0 0 0 11 0l.4.3a12 12 0 0 1-1.8.9l.6 1a19 19 0 0 0 5.8-3.3c.4-5-.8-9.4-3.5-13.2ZM8.4 12.2c-.9 0-1.7-.8-1.7-1.9 0-1 .8-1.9 1.7-1.9s1.7.9 1.7 1.9c0 1-.8 1.9-1.7 1.9Zm7.2 0c-.9 0-1.7-.8-1.7-1.9 0-1 .8-1.9 1.7-1.9s1.7.9 1.7 1.9c0 1-.8 1.9-1.7 1.9Z"/></svg>
+          Synced with Discord
+        </div>
+        <div className="space-y-2">
+          {HUB_ANNOUNCEMENTS.map((a, i) => (
+            <div key={i} className="rounded-xl border-2 border-[#17120F] bg-[#FFF8D8] p-3 flex items-start gap-2">
+              <HubAvatar name={a.author} tone="ink" />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <p className="font-black text-sm text-[#17120F] truncate">{a.author}</p>
+                  {a.host && <span className="rounded bg-[#E51F1F] px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-white">Host</span>}
+                  <span className="ml-auto text-[10px] font-bold text-[#8B2D1F]/70">{a.time}</span>
+                </div>
+                <p className="mt-0.5 text-sm font-bold text-[#3A2410] leading-snug">{a.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </HubSection>
+
+      {/* Squad */}
+      <HubSection title="Squad" jp="相席">
+        <p className="text-xs font-bold text-[#5B3428] mb-3">Pair up or form a group — sit with the people you came for.</p>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex -space-x-2">
+            <HubAvatar name="You" />
+            <HubAvatar name="Senpai" tone="white" />
+          </div>
+          <span className="text-xs font-black text-[#17120F]">You + Senpai</span>
+          <div className="w-9 h-9 rounded-full border-2 border-dashed border-[#17120F] flex items-center justify-center font-black text-[#8B2D1F]">+</div>
+        </div>
+        <p className="text-[9px] font-black uppercase tracking-widest text-[#8B2D1F] mb-2">Looking to sit together</p>
+        <div className="space-y-2">
+          {HUB_SUGGESTIONS.map(n => (
+            <div key={n} className="flex items-center gap-3 rounded-xl border-2 border-[#17120F] bg-white p-2.5 shadow-[3px_3px_0_rgba(23,18,15,0.2)]">
+              <HubAvatar name={n} />
+              <p className="font-black text-sm text-[#17120F] flex-1">{n}</p>
+              <button disabled className="brand-action-alt rounded-lg border-2 border-[#17120F] px-3 py-1.5 text-[10px] font-black uppercase tracking-widest opacity-60">Invite</button>
+            </div>
+          ))}
+        </div>
+      </HubSection>
+
+      {/* Table */}
+      <HubSection title="Your Table" jp="卓">
+        <div className="brand-ticket rounded-2xl border-2 border-[#17120F] p-4 mb-4 flex items-center gap-4 shadow-[4px_4px_0_#E51F1F]">
+          <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border-2 border-[#17120F] bg-[#E51F1F] text-white shadow-[2px_2px_0_#17120F]">
+            <span className="font-brush text-sm leading-none">卓</span>
+            <span className="font-display text-2xl leading-none">3</span>
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-[#8B2D1F]">You&apos;re seated at</p>
+            <p className="font-display text-xl uppercase tracking-tight text-[#17120F] leading-none">Table 3</p>
+            <p className="mt-1 text-xs font-bold text-[#5B3428]">with You, Senpai · 4 more</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {HUB_TABLES.map(t => (
+            <div key={t.n} className={`flex flex-col items-center justify-center rounded-xl border-2 border-[#17120F] py-3 ${t.yours ? 'bg-[#E51F1F] text-white shadow-[3px_3px_0_#17120F]' : 'bg-[#FFF8D8] text-[#17120F]'}`}>
+              <span className="font-display text-2xl leading-none">{t.n}</span>
+              <span className="mt-0.5 text-[8px] font-black uppercase tracking-widest opacity-70">Table</span>
+              {t.yours && <span className="mt-1 rounded bg-white px-1.5 text-[8px] font-black uppercase tracking-wider text-[#E51F1F]">You</span>}
+            </div>
+          ))}
+        </div>
+      </HubSection>
+
+      {/* Settle Up */}
+      <HubSection title="Settle Up" jp="お会計">
+        <p className="text-xs font-bold text-[#5B3428] mb-3">At check-out the organiser shares how to pay — cash, or cashless if enabled.</p>
+        <div className="rounded-2xl border-2 border-[#17120F] bg-[#FFF8D8] p-4 shadow-[4px_4px_0_rgba(23,18,15,0.2)]">
+          <div className="flex items-end justify-between border-b-2 border-dashed border-[#17120F]/40 pb-3">
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-[#8B2D1F]">Your share</p>
+              <p className="font-display text-3xl text-[#17120F] leading-none">¥3,200</p>
+            </div>
+            <p className="text-[10px] font-bold text-[#5B3428] text-right">割り勘<br />party of 2 · ¥6,400</p>
+          </div>
+          <div className="flex items-center gap-2 pt-3">
+            <HubAvatar name="Fadekyun" tone="ink" />
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-[#8B2D1F]">Pay the host</p>
+              <p className="font-black text-sm text-[#17120F]">Fadekyun</p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-2 mt-3">
+          <button disabled className="flex flex-col items-center gap-1 rounded-xl border-2 border-[#17120F] bg-[#9FE870] py-3 font-black text-[#163300] opacity-70 shadow-[3px_3px_0_#17120F]">
+            <span className="text-sm leading-none">Wise</span><span className="text-[8px] uppercase tracking-widest">Cashless</span>
+          </button>
+          <button disabled className="flex flex-col items-center gap-1 rounded-xl border-2 border-[#17120F] bg-[#FF0033] py-3 font-black text-white opacity-70 shadow-[3px_3px_0_#17120F]">
+            <span className="text-sm leading-none">PayPay</span><span className="text-[8px] uppercase tracking-widest">JP</span>
+          </button>
+          <button disabled className="flex flex-col items-center gap-1 rounded-xl border-2 border-[#17120F] bg-white py-3 font-black text-[#17120F] opacity-70 shadow-[3px_3px_0_#17120F]">
+            <span className="text-sm leading-none">Cash</span><span className="text-[8px] uppercase tracking-widest">At table</span>
+          </button>
+        </div>
+      </HubSection>
+    </div>
   )
 }
 
